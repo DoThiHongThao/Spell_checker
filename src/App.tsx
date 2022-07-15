@@ -5,6 +5,7 @@ import {
   Route, Switch, RouteComponentProps
 } from "react-router-dom";
 import UploadFile from './pages/UploadFile';
+import DownloadFile from './pages/DownloadFile';
 function App() {
   return (
     <Router>
@@ -20,6 +21,12 @@ function App() {
           path="/hightlighter"
           exact
           render={(props: RouteComponentProps<any>) => <HightLighter />}
+        />
+        <Route
+          key={`download`}
+          path="/download"
+          exact
+          render={(props: RouteComponentProps<any>) => <DownloadFile />}
         />
       </Switch>
     </Router>

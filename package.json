@@ -13,10 +13,13 @@
     "@types/pdfjs-dist": "2.7.4",
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.2",
+    "asposepdfcloud": "20.7.0",
     "axios": "^0.27.2",
     "firebase": "^9.8.4",
     "lodash.debounce": "^4.0.8",
+    "patch-package": "^6.4.7",
     "pdfjs-dist": "2.11.338",
+    "postinstall-postinstall": "^2.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-rnd": "^10.3.7",
@@ -26,6 +29,7 @@
     "web-vitals": "^2.1.0"
   },
   "scripts": {
+    "postinstall": "patch-package",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

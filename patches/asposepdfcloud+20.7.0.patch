@@ -1,0 +1,98 @@
+diff --git a/node_modules/asposepdfcloud/src/auth.ts b/node_modules/asposepdfcloud/src/auth.ts
+index a367b06..2f9cfdb 100644
+--- a/node_modules/asposepdfcloud/src/auth.ts
++++ b/node_modules/asposepdfcloud/src/auth.ts
+@@ -19,7 +19,7 @@
+  *
+  */
+ 
+-import request = require("request");
++import request from "request";
+ import { Configuration } from "./configuration";
+ import { invokeApiMethod } from "./requestHelper";
+ 
+@@ -35,14 +35,14 @@ export interface IAuthentication {
+     /**
+      * Handle 401 response.
+      */
+-    handle401response(configuration: Configuration);
++    handle401response(configuration: Configuration): void;
+ }
+ 
+ /**
+  * Implements OAuth authentication
+  */
+ export class OAuth implements IAuthentication {
+-    private accessToken: string;
++    private accessToken: string | undefined;
+ 
+      /**
+       * Apply authentication settings to header and query params.
+diff --git a/node_modules/asposepdfcloud/src/configuration.ts b/node_modules/asposepdfcloud/src/configuration.ts
+index 0a722f4..a5cc4b1 100644
+--- a/node_modules/asposepdfcloud/src/configuration.ts
++++ b/node_modules/asposepdfcloud/src/configuration.ts
+@@ -43,12 +43,12 @@ export class Configuration {
+     /**
+      * Base Url.
+      */
+-    public baseUrl: string;
++    public baseUrl!: string;
+ 
+     /**
+      *  Gets or sets a value indicating whether debug mode. In debug mode all requests and responses are logged to console.
+      */
+-    public debugMode: boolean;
++    public debugMode?: boolean;
+ 
+     constructor(appSID: string, appKey: string, baseUrl?: string, debugMode?: boolean) {
+         if (baseUrl) {
+diff --git a/node_modules/asposepdfcloud/src/requestHelper.ts b/node_modules/asposepdfcloud/src/requestHelper.ts
+index 41e042b..1f61345 100644
+--- a/node_modules/asposepdfcloud/src/requestHelper.ts
++++ b/node_modules/asposepdfcloud/src/requestHelper.ts
+@@ -19,7 +19,7 @@
+  *
+  */
+ 
+-import request = require("request");
++import request from "request";
+ import { Configuration } from "./configuration";
+ import { ObjectSerializer } from "./objectSerializer";
+ var superagent = require("superagent");
+@@ -48,7 +48,7 @@ export async function invokeApiMethod(requestOptions: request.Options, confgurat
+  * @param parameterName parameterName
+  * @param parameterValue parameterValue
+  */
+-export function addQueryParameterToUrl(url, queryParameters, parameterName, parameterValue) {
++export function addQueryParameterToUrl(url: any, queryParameters: any, parameterName: any, parameterValue: any) {
+     if (parameterValue !== undefined) {
+         if (url.indexOf("{" + parameterName + "}") >= 0) {
+             url = url.replace("{" + parameterName + "}", String(parameterValue));
+@@ -68,7 +68,7 @@ export function addQueryParameterToUrl(url, queryParameters, parameterName, para
+  * @param confguration api configuration
+  * @param notApplyAuthToRequest if setted to true, auth is not applied to request
+  */
+-async function invokeApiMethodInternal(requestOptions: request.Options, confguration: Configuration, notApplyAuthToRequest?: boolean, postData?: Buffer): Promise<request.RequestResponse> {
++async function invokeApiMethodInternal(requestOptions: request.Options | any, confguration: Configuration, notApplyAuthToRequest?: boolean, postData?: Buffer): Promise<request.RequestResponse> {
+ 
+     let sa = superagent(requestOptions.method, requestOptions["uri"]);
+ 
+@@ -111,7 +111,7 @@ async function invokeApiMethodInternal(requestOptions: request.Options, confgura
+ 
+ 
+     return new Promise<request.RequestResponse>((resolve, reject) => {
+-        sa.catch(async err => {
++        sa.catch(async (err: { status: number; }) => {
+             if (err.status === 401 && !notApplyAuthToRequest) {
+                 await auth.handle401response(confguration);
+                 reject(new NeedRepeatException());
+@@ -121,7 +121,7 @@ async function invokeApiMethodInternal(requestOptions: request.Options, confgura
+ 
+          });
+ 
+-        sa.then(async (response) => {
++        sa.then(async (response: any) => {
+             if (response.status >= 200 && response.status <= 299) {
+                 resolve(response);
+             } else {
